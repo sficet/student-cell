@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Academic Cell Notes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://kit.fontawesome.com/0e66e07bd2.js" crossorigin="anonymous"></script>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#4a3aff" />
+<link rel="icon" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <style>
+    body {
+      background: #fbf4f4;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .navbar-brand {
+      font-weight: 600;
+      color: rgb(150,20,0) !important;
+    }
+
+    .hero {
+      background:#ffeaea;
+      padding: 4rem 0;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero h1 {
+      color: red;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .circle1{
+      background:rgba(255, 0, 0, 0.562);
+      height: 200px;
+      width: 200px;
+      position: absolute;
+      left: 0;
+      border-radius: 50%;
+      animation: movecircle 10s linear infinite;
+     
+    }
+
+    .note-card {
+      border: none;
+      border-radius: 1.25rem;
+      box-shadow: 0 8px 24px rgba(255, 58, 58, 0.1);
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .note-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(255, 58, 58, 0.15);
+    }
+
+    .badge-sem {
+      background-color: #dfe4ff;
+      color: #333;
+      font-size: 0.75rem;
+    }
+
+    .btn-primary {
+      background-color: rgb(220, 29, 0);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: rgb(255, 21, 0);
+    }
+    .input-group{
+      margin-top:2vh;
+      width: 50vw;
+      z-index: 1;
+    }
+    .dark{
+      background-color: 	#1C1C1C !important;
+      box-shadow: 0 .125rem .25rem rgba(255, 255, 255, 0.075) !important;
+    } 
+    .dark .navbar-brand{
+      color: white !important;
+    }
+    .dark .navbar-toggler{
+      background-color: white !important;
+    }
+    .dark a{
+      color: white !important;
+    }
+    
+
+    .dark-intro{
+      background: #1c1b1bce!important;
+    }
+    .dark-intro h1, .dark-intro p{
+      color: white !important;
+    }
+
+    .dark-body{
+      background-color: #51515188 !important;
+    }
+    .dark-card{
+      background-color: #1c1b1bce!important;
+      color: white !important;
+    }
+    .dark-card h6{
+      color: white;
+    }
+    .dark-circle{
+      background-color: rgba(128, 128, 128, 0.562) !important;
+      animation: movedarkcircle 10s linear infinite;
+    }
+    .fa-heart{
+      margin-left: 10px;
+      color: red;
+    }
+    .fa-regular{
+      margin-left: 10px;
+      color: red;
+    }
+    .fa-solid{
+      margin-left: 10px;
+      color: red;
+    }
+    @media (max-width: 576px) {
+      .form-select {
+        margin-bottom: 10px;
+      }
+
+      .note-card {
+        margin-bottom: 1rem;
+      }
+      .input-group{
+        margin-left:0.8rem ;
+        width: 91vw;
+      }
+    }
+    @keyframes movecircle{
+      0%{
+        top:0;
+        left:0;
+        opacity: 1;
+      }
+      50%{
+        top:30vh;
+        left:30vw;
+        opacity: 0.5;
+      }
+      100%{
+        top:40vh;
+        left:40vw;
+        opacity: 0;
+      }
+    }
+    @keyframes movedarkcircle{
+      0%{
+        top:0;
+        left:0;
+        opacity: 1;
+      }
+      50%{
+        top:30vh;
+        left:30vw;
+        opacity: 0.5;
+      }
+      100%{
+        top:40vh;
+        left:40vw;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">📘 Academic Cell Notes</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="home.html" id="home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#notes" id="note_home">Notes</a></li>
+          <li class="nav-item"><a class="nav-link" href="home.html#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#fav" id="fav">Favorites</a></li>
+          <li class="nav-item" id="themeChange"><a class="nav-link" href="#">Dark Mode</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero mb-4">
+    <div class="container intro">
+      <h1>Share and Explore Academic Notes Effortlessly</h1>
+      <p class="text-muted">Filter by Scheme, Semester, Department</p>
+    </div>
+    <div class="input-group mb-3">
+  <input type="text" id="search" class="form-control" placeholder="Type to search.." aria-label="Recipient’s username" aria-describedby="button-addon2">
+  <button class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
+</div>
+<div class="circle1"></div>
+  </section>
+
+  
+
+
+
+  <!-- Filters -->
+  <div class="container mb-4 filters">
+    <div class="row">
+      <div class="col-lg-4 mb-3">
+        <select id="scheme" class="form-select"></select>
+      </div>
+      <div class="col-lg-4 mb-3">
+        <select id="semester" class="form-select"></select>
+      </div>
+      <div class="col-lg-4 mb-3">
+        <select id="department" class="form-select"></select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="container">
+    <div id="notes" class="row g-4"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center mt-5 py-4 text-muted">
+    &copy; 2025 Academic Cell Notes. Built with ❤️ by Students for Students.
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Main JS -->
+  <script>
+  let bookmarks_arr = [];
+
+  function call_bookmarks() {
+    const bookmarks = localStorage.getItem("bookmarks");
+    if (bookmarks == null) {
+      localStorage.setItem("bookmarks", JSON.stringify([]));
+      bookmarks_arr = [];
+    } else {
+      bookmarks_arr = JSON.parse(bookmarks);
+    }
+  }
+
+  const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFT0vjtPXwWjA4t0ZFDg_dlZvEO-a0J-Y_kX778dd1kpK0A_0k7aCZpZX33u_sRxJXn6n6KaykIVaV/pub?output=csv";
+  let data = [];
+
+  function loadCSV(url, callback) {
+    Papa.parse(url, {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: function(results) {
+        data = results.data.map(row =>
+          Object.fromEntries(Object.entries(row).map(([k, v]) => [k.trim(), v.trim()]))
+        );
+        callback();
+      },
+      error: function(err) {
+        console.error("CSV Parse Error:", err);
+      }
+    });
+  }
+
+  function populateFilters() {
+    const schemeSel = document.getElementById("scheme");
+    const semesterSel = document.getElementById("semester");
+    const deptSel = document.getElementById("department");
+    const search = document.getElementById("search");
+
+    const schemes = new Set(), semesters = new Set(), depts = new Set();
+
+    data.forEach(row => {
+      if (row.publishedStatus?.toLowerCase() !== "true") return;
+      if (row.Scheme) schemes.add(row.Scheme);
+      if (row.Semester) semesters.add(row.Semester);
+      if (row.Department) depts.add(row.Department);
+    });
+
+    schemeSel.innerHTML = `<option value="">Scheme (All)</option>`;
+    semesterSel.innerHTML = `<option value="">Semester (All)</option>`;
+    deptSel.innerHTML = `<option value="">Department (All)</option>`;
+
+    [...schemes].sort().forEach(val => schemeSel.innerHTML += `<option value="${val}">${val}</option>`);
+    [...semesters].sort().forEach(val => semesterSel.innerHTML += `<option value="${val}">${val}</option>`);
+    [...depts].sort().forEach(val => deptSel.innerHTML += `<option value="${val}">${val}</option>`);
+
+    schemeSel.onchange = semesterSel.onchange = deptSel.onchange = renderCards;
+    search.addEventListener("input", renderCards);
+
+    renderCards();
+  }
+
+  function renderCards() {
+    const scheme = document.getElementById("scheme").value;
+    const semester = document.getElementById("semester").value;
+    const dept = document.getElementById("department").value;
+    const search = document.getElementById("search").value;
+
+    const filtered = data.filter(row =>
+      row.publishedStatus?.toLowerCase() === "true" &&
+      (!scheme || row.Scheme === scheme) &&
+      (!semester || row.Semester === semester) &&
+      (!dept || row.Department === dept) &&
+      (!search || row.CourseName.toLowerCase().includes(search.toLowerCase()))
+    );
+
+    const cardArea = document.getElementById("notes");
+    cardArea.innerHTML = "";
+
+    if (!filtered.length) {
+      cardArea.innerHTML = "<p class='text-center text-muted'>No published notes found.</p>";
+      return;
+    }
+
+    filtered.forEach(row => {
+      const isBookmarked = bookmarks_arr.includes(row["Notes Link"]);
+      const card = document.createElement("div");
+      card.className = "col-12 col-md-6 col-lg-4";
+
+      card.innerHTML = `
+        <div class="card h-100 note-card">
+          <div class="card-body">
+            <h5 class="card-title">${row.CourseCode} - ${row.CourseName}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Module ${row.ModuleNo}: ${row.ModuleTitle}</h6>
+            <p class="card-text"><strong>Syllabus:</strong> ${row.Syllabus}</p>
+          </div>
+          <div class="card-footer bg-white border-0">
+            <a href="${row["Notes Link"]}" target="_blank" class="btn btn-sm btn-primary">📄 Open Notes</a>
+            ${isBookmarked ? 
+              '<i class="fa-solid fa-heart heart"></i>' : 
+              '<i class="fa-regular fa-heart heart"></i>'}
+            <span class="badge badge-sem float-end">Sem ${row.Semester}</span>
+          </div>
+        </div>
+      `;
+      cardArea.appendChild(card);
+    });
+
+    callhearts();
+  }
+
+  function callhearts() {
+    const hearts = document.querySelectorAll(".heart");
+
+    hearts.forEach(heart => {
+      heart.addEventListener("click", () => {
+        const card = heart.closest(".card");
+        const notesLink = card.querySelector("a").href;
+
+        if (heart.classList.contains("fa-regular")) {
+          heart.classList.remove("fa-regular");
+          heart.classList.add("fa-solid");
+
+          if (!bookmarks_arr.includes(notesLink)) {
+            bookmarks_arr.push(notesLink);
+          }
+        } else {
+          heart.classList.remove("fa-solid");
+          heart.classList.add("fa-regular");
+
+          const index = bookmarks_arr.indexOf(notesLink);
+          if (index !== -1) {
+            bookmarks_arr.splice(index, 1);
+          }
+        }
+
+        localStorage.setItem("bookmarks", JSON.stringify(bookmarks_arr));
+        call_bookmarks(); // Refresh local cache
+      });
+    });
+  }
+
+  function renderCards_bookmarked() {
+    const scheme = document.getElementById("scheme").value;
+    const semester = document.getElementById("semester").value;
+    const dept = document.getElementById("department").value;
+    const search = document.getElementById("search").value;
+
+    const filtered = data.filter(row =>
+      row.publishedStatus?.toLowerCase() === "true" &&
+      (!scheme || row.Scheme === scheme) &&
+      (!semester || row.Semester === semester) &&
+      (!dept || row.Department === dept) &&
+      (!search || row.CourseName.toLowerCase().includes(search.toLowerCase())) &&
+      bookmarks_arr.includes(row["Notes Link"])
+    );
+
+    const cardArea = document.getElementById("notes");
+    cardArea.innerHTML = "";
+
+    if (!filtered.length) {
+      cardArea.innerHTML = "<p class='text-center text-muted'>No published notes found.</p>";
+      return;
+    }
+
+    filtered.forEach(row => {
+      const card = document.createElement("div");
+      card.className = "col-12 col-md-6 col-lg-4";
+
+      card.innerHTML = `
+        <div class="card h-100 note-card">
+          <div class="card-body">
+            <h5 class="card-title">${row.CourseCode} - ${row.CourseName}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Module ${row.ModuleNo}: ${row.ModuleTitle}</h6>
+            <p class="card-text"><strong>Syllabus:</strong> ${row.Syllabus}</p>
+          </div>
+          <div class="card-footer bg-white border-0">
+            <a href="${row["Notes Link"]}" target="_blank" class="btn btn-sm btn-primary">📄 Open Notes</a>
+            <i class="fa-solid fa-heart heart"></i>
+            <span class="badge badge-sem float-end">Sem ${row.Semester}</span>
+          </div>
+        </div>
+      `;
+      cardArea.appendChild(card);
+    });
+
+    callhearts();
+  }
+
+  document.querySelector("#fav").addEventListener("click", () => {
+    renderCards_bookmarked();
+  });
+  document.querySelector("#note_home").addEventListener("click", () => {
+    populateFilters();
+  });
+
+  // Theme Toggle
+  let isLight = true;
+  document.querySelector('#themeChange').addEventListener('click', () => {
+    let nav = document.querySelector('.navbar');
+    let intro = document.querySelector('.mb-4');
+    let filters = document.querySelector('body');
+    let circle = document.querySelector('.circle1');
+
+    if (isLight) {
+      document.querySelector('#themeChange').innerHTML = `<a class="nav-link" href="#notes">Light Mode</a>`;
+      nav.classList.add('dark');
+      intro.classList.add('dark-intro');
+      filters.classList.add('dark-body');
+      circle.classList.add('dark-circle');
+      isLight = false;
+    } else {
+      document.querySelector('#themeChange').innerHTML = `<a class="nav-link" href="#notes">Dark Mode</a>`;
+      nav.classList.remove('dark');
+      intro.classList.remove('dark-intro');
+      filters.classList.remove('dark-body');
+      circle.classList.remove('dark-circle');
+      isLight = true;
+    }
+  });
+
+  // Init
+  call_bookmarks();
+  loadCSV(sheetURL, populateFilters);
+</script>
+
+</body>
+</html>
