@@ -1,7 +1,7 @@
 const CACHE_NAME = 'noteshub-cache-v1';
 const urlsToCache = [
     './',
-    './index.php',
+    './notes.html',
     './manifest.json',
     './main.js',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
