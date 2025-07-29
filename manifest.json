@@ -1,7 +1,7 @@
 {
-    "name": "Academic Cell Notes",
-    "short_name": "NotesHub",
-    "start_url": "./index.php",
+    "name": "SFI NotesHub",
+    "short_name": "SFI NotesHub",
+    "start_url": "./notes.html",
     "display": "standalone",
     "background_color": "#f4f6fb",
     "theme_color": "#4a3aff",
